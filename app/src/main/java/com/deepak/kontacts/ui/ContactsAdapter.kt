@@ -1,6 +1,5 @@
 package com.deepak.kontacts.ui
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import com.deepak.kontacts.R
 import com.deepak.kontacts.db.MyContacts
 import org.jetbrains.anko.find
 
-class ContactsAdapter(private val contactList: MutableList<MyContacts>, private val listener: (MyContacts, View) -> Unit) : RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>() {
+class ContactsAdapter(private val contactList: MutableList<MyContacts>, private val listener: (MyContacts, View) -> Unit) : androidx.recyclerview.widget.RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int): ContactViewHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_contact, viewGroup, false)
@@ -35,7 +34,7 @@ class ContactsAdapter(private val contactList: MutableList<MyContacts>, private 
 
     override fun getItemCount(): Int = contactList.size
 
-    class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ContactViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         var name: TextView? = itemView.find(R.id.contact_name) as TextView
         var mobile: TextView? = itemView.find(R.id.contact_mobile) as TextView
         var image: ImageView = itemView.find(R.id.contact_image) as ImageView
