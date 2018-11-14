@@ -6,71 +6,51 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.util.Log
-import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.deepak.kontacts.R
 import com.deepak.kontacts.db.MyContacts
+import com.deepak.kontacts.util.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
-
-//TODO("Add permission dispatcher library")
-
 class MainActivity : AppCompatActivity() {
-    @Suppress("unused")
-    companion object {
-        private const val PERMISSION_READ_CONTACT = 101
-        private const val PERMISSION_CALL_PHONE = 102
-
-        private val CONTENT_URI = ContactsContract.Contacts.CONTENT_URI
-        private val PHONE_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-
-        private const val ID = ContactsContract.Contacts._ID
-        private const val DISPLAY_NAME = ContactsContract.Contacts.DISPLAY_NAME
-        private const val HAS_PHONE_NUMBER = ContactsContract.Contacts.HAS_PHONE_NUMBER
-        private const val PHONE_ID = ContactsContract.CommonDataKinds.Phone.CONTACT_ID
-        private const val NUMBER = ContactsContract.CommonDataKinds.Phone.NUMBER
-
-        private const val CONTACT_NAME = "CONTACT_NAME"
-        private const val CONTACT_PHONE = "CONTACT_PHONE"
-        private const val CONTACT_IMAGE = "CONTACT_IMAGE"
-        private const val IS_FETCHED_FROM_CP = "CONTACT_IMAGE"
-        private const val KONTACT_PREFERENCES = "KONTACT_PREFERENCES"
-    }
-
-    private var adapter: ContactsAdapter? = null
+    private var contactsAdapter: ContactsAdapter? = null
     private var myContacts: MutableList<MyContacts> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val itemDecoration = androidx.recyclerview.widget.DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL)
-        recycler_view.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
-        recycler_view.addItemDecoration(itemDecoration)
-        adapter = ContactsAdapter(myContacts) { contact, view -> onItemClick(contact, view) }
-        recycler_view.hasFixedSize()
-        recycler_view.adapter = adapter
+        checkPermission()
+
+        val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        contactsAdapter = ContactsAdapter(myContacts) { contact, position -> onItemClick(contact, position) }
+        recycler_view.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            addItemDecoration(itemDecoration)
+            hasFixedSize()
+            adapter = contactsAdapter
+        }
 
         val simpleCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, target: androidx.recyclerview.widget.RecyclerView.ViewHolder): Boolean {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 return false
             }
 
-            override fun onSwiped(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, direction: Int) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.layoutPosition
                 if (direction == ItemTouchHelper.RIGHT) {
 //                    val swipedContact = viewHolder.itemView.tag as MyContacts
@@ -85,11 +65,15 @@ class MainActivity : AppCompatActivity() {
         }
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(recycler_view)
-
-        checkPermission()
     }
 
-    private fun onItemClick(contact: MyContacts?, view: View) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == PERMISSION_READ_CONTACT && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            loadContactFromProvider()
+        }
+    }
+
+    private fun onItemClick(contact: MyContacts?, position: Int) {
         val phone = String.format("tel: %s", contact?.contactNumber!![0])
         val intent = Intent(Intent.ACTION_CALL, Uri.parse(phone))
         if (intent.resolveActivity(packageManager) != null) {
@@ -145,28 +129,12 @@ class MainActivity : AppCompatActivity() {
                     log("""${contacts.contactName} ${contacts.contactNumber} ${contacts.contactImage.toString()}""")
                     myContacts.add(contacts)
                 }
-                adapter?.notifyDataSetChanged()
+                contactsAdapter?.notifyDataSetChanged()
                 cursor.close()
             }
         }
         hideProgressBar()
         log("loading done...")
-    }
-
-    private fun vectorDrawableToBitmap(drawableId: Int): Bitmap? {
-        val drawable: Drawable? = ContextCompat.getDrawable(this, drawableId)
-        val bitmap: Bitmap
-
-        return when {
-            drawable != null -> {
-                bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-                val canvas = Canvas(bitmap)
-                drawable.setBounds(0, 0, canvas.width, canvas.height)
-                drawable.draw(canvas)
-                bitmap
-            }
-            else -> null
-        }
     }
 
     private fun checkPermission() {
@@ -183,24 +151,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (requestCode == PERMISSION_READ_CONTACT && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            loadContactFromProvider()
-        }
-    }
-
     private fun showProgressBar() {
-        progress_bar.visibility = View.VISIBLE
+        progress_bar.show()
 //        constraint_layout.setBackgroundColor(Color.GRAY)
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     private fun hideProgressBar() {
-        progress_bar.visibility = View.GONE
+        progress_bar.hide()
 //        constraint_layout.setBackgroundColor(Color.WHITE)
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
-    private fun log(message: String) = Log.d("DEBUG", message)
 
 }
