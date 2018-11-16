@@ -21,7 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.ViewContactActivity" />
+        <activity
+            android:name=".ui.ViewContactActivity"
+            android:parentActivityName=".ui.MainActivity" />
     </application>
 
 </manifest>

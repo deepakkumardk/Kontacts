@@ -11,7 +11,7 @@
         android:id="@+id/view_contact_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center|top"
+        android:adjustViewBounds="true"
         android:layout_weight="2"
         android:contentDescription="@string/contact_image"
         tools:src="@drawable/ic_launcher_background" />
@@ -21,7 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:drawableStart="@drawable/ic_person_black"
         android:textSize="20sp"
+        android:drawableLeft="@drawable/ic_person_black"
+        android:drawablePadding="16dp"
+        android:textColor="@color/colorBlack"
         tools:text="Deepak Kumar" />
 
     <TextView
@@ -29,6 +33,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:drawableStart="@drawable/ic_call_black"
+        android:drawableLeft="@drawable/ic_call_black"
+        android:drawablePadding="16dp"
+        android:textColor="@color/colorBlack"
         android:textSize="20sp"
         tools:text="+91 1234567890" />
 

@@ -5,6 +5,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.deepak.kontacts.R
+import com.deepak.kontacts.util.EXTRA_CONTACT_IMAGE
+import com.deepak.kontacts.util.EXTRA_CONTACT_NAME
+import com.deepak.kontacts.util.EXTRA_CONTACT_PHONE
 import kotlinx.android.synthetic.main.activity_view_contact.*
 
 class ViewContactActivity : AppCompatActivity() {
@@ -14,9 +17,9 @@ class ViewContactActivity : AppCompatActivity() {
         setContentView(R.layout.activity_view_contact)
 
         val intent: Intent? = intent
-        val name = intent?.getStringExtra("CONTACT_NAME")
-        val mobile = intent?.getStringArrayListExtra("CONTACT_PHONE")
-        val image = intent?.getBundleExtra("CONTACT_IMAGE")
+        val name = intent?.getStringExtra(EXTRA_CONTACT_NAME)
+        val mobile = intent?.getStringArrayListExtra(EXTRA_CONTACT_PHONE)
+        val image = intent?.getBundleExtra(EXTRA_CONTACT_IMAGE)
 
         view_contact_name.text = name
         view_contact_phone.text = mobile.toString()

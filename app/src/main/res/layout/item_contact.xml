@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:maxLines="1"
+            android:textColor="@color/colorBlack"
             android:textSize="20sp"
             tools:text="Contact Name" />
 
@@ -37,6 +38,7 @@
             android:gravity="end"
             android:maxLines="1"
             android:textAlignment="gravity"
+            android:textColor="@color/colorBlack"
             android:textSize="20sp"
             tools:text="Contact Mobile" />
     </LinearLayout>

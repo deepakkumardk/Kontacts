@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity() {
     private fun onItemClick(contact: MyContacts?, position: Int) {
         val phone = String.format("tel: %s", contact?.contactNumber!![0])
         val intent = Intent(Intent.ACTION_CALL, Uri.parse(phone))
+//        makeCall(contact.contactNumber[0])
         if (intent.resolveActivity(packageManager) != null) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
