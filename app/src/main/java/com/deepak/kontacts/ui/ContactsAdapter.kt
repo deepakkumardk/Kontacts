@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.deepak.kontacts.R
-import com.deepak.kontacts.db.MyContacts
+import com.deepakkumardk.kontactpickerlib.model.MyContacts
 import org.jetbrains.anko.find
 
-class ContactsAdapter(private val contactList: MutableList<MyContacts>,
+class ContactsAdapter(private var contactList: MutableList<MyContacts>,
                       private val listener: (MyContacts, Int) -> Unit) :
         RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>() {
 
@@ -24,16 +24,24 @@ class ContactsAdapter(private val contactList: MutableList<MyContacts>,
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         val contact = contactList[position]
         holder.name.text = contact.contactName
-        holder.mobile.text = contact.contactNumber[0]
+        holder.mobile.text = contact.contactNumber
 
         Glide.with(holder.itemView.context)
-                .load(contact.contactImage)
+                .load(contact.photoUri)
+                .placeholder(R.drawable.ic_person)
                 .apply(RequestOptions().fitCenter())
+                .error(R.drawable.ic_person_black)
+                .fallback(R.drawable.ic_person_black)
                 .into(holder.image)
         holder.itemView.setOnClickListener { listener(contact, holder.adapterPosition) }
     }
 
-    override fun getItemCount(): Int = contactList.size
+    override fun getItemCount() = contactList.size
+
+    fun updateList(data: MutableList<MyContacts>) {
+        contactList = data
+        notifyDataSetChanged()
+    }
 
     class ContactViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var name = view.find<TextView>(R.id.contact_name)
