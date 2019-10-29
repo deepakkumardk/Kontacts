@@ -13,7 +13,7 @@ import com.deepakkumardk.kontactpickerlib.model.MyContacts
 import org.jetbrains.anko.find
 
 class ContactsAdapter(private var contactList: MutableList<MyContacts>,
-                      private val listener: (MyContacts, Int) -> Unit) :
+                      private val listener: (MyContacts, Int, View,View) -> Unit) :
         RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int): ContactViewHolder {
@@ -28,12 +28,13 @@ class ContactsAdapter(private var contactList: MutableList<MyContacts>,
 
         Glide.with(holder.itemView.context)
                 .load(contact.photoUri)
-                .placeholder(R.drawable.ic_person)
                 .apply(RequestOptions().fitCenter())
-                .error(R.drawable.ic_person_black)
-                .fallback(R.drawable.ic_person_black)
+                .placeholder(R.drawable.ic_person)
+                .error(R.drawable.ic_person)
+                .fallback(R.drawable.ic_person)
                 .into(holder.image)
-        holder.itemView.setOnClickListener { listener(contact, holder.adapterPosition) }
+        holder.image.setOnClickListener { listener(contact, holder.adapterPosition, it,holder.image) }
+        holder.name.setOnClickListener { listener(contact, holder.adapterPosition, it,holder.image) }
     }
 
     override fun getItemCount() = contactList.size

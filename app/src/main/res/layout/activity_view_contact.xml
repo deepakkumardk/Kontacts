@@ -13,8 +13,10 @@
         android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:layout_weight="2"
+        android:transitionName="UserImage"
         android:contentDescription="@string/contact_image"
-        tools:src="@drawable/ic_launcher_background" />
+        tools:src="@drawable/ic_launcher_background"
+        tools:targetApi="lollipop" />
 
     <TextView
         android:id="@+id/view_contact_name"

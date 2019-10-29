@@ -14,8 +14,9 @@ const val HAS_PHONE_NUMBER = ContactsContract.Contacts.HAS_PHONE_NUMBER
 const val PHONE_ID = ContactsContract.CommonDataKinds.Phone.CONTACT_ID
 const val NUMBER = ContactsContract.CommonDataKinds.Phone.NUMBER
 
-const val EXTRA_CONTACT_NAME = "CONTACT_NAME"
-const val EXTRA_CONTACT_PHONE = "CONTACT_PHONE"
-const val EXTRA_CONTACT_IMAGE = "CONTACT_IMAGE"
-const val EXTRA_IS_FETCHED_FROM_CP = "CONTACT_IMAGE"
-const val EXTRA_KONTACT_PREFERENCES = "KONTACTS_PREF"
+const val EXTRA_CONTACT = "contact"
+
+const val EXTRA_CONTACT_NAME = "contact_name"
+const val EXTRA_CONTACT_PHONE = "contact_phone"
+const val EXTRA_CONTACT_PHOTO_URI = "contact_photo_uri"
+const val EXTRA_CONTACT_IMAGE = "contact_image"
