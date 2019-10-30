@@ -18,7 +18,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.chibatching.kotpref.Kotpref
 import com.deepak.kontacts.R
-import com.deepak.kontacts.db.MyContactModel
+import com.deepak.kontacts.model.FavouriteModel
+import com.deepak.kontacts.model.MyContactModel
 import com.deepak.kontacts.util.*
 import com.deepak.kontacts.viewmodel.RealmKontactsViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         initViewModel()
         contactsAdapter = ContactsAdapter(myContacts, this::onItemClick)
         recycler_view.apply {
+            addItemDecoration(GridSpacingItemDecoration(2, 8, false))
             layoutManager = GridLayoutManager(this@MainActivity, 2)
             adapter = contactsAdapter
             hasFixedSize()
@@ -98,12 +100,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             R.id.contact_name -> {
-                val contactStr = contact?.convertToString()!!
+                val contactStr = contact?.getRealmCopy()?.convertToString()!!
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, "UserImage")
                 val intent = Intent(this, ViewContactActivity::class.java)
-                intent.putExtra(EXTRA_CONTACT_NAME, contact.contactName)
-                intent.putExtra(EXTRA_CONTACT_PHONE, contact.contactNumber)
-                intent.putExtra(EXTRA_CONTACT_PHOTO_URI, contact.photoUri.toString())
+                intent.putExtra(EXTRA_CONTACT, contactStr)
                 startActivity(intent, options.toBundle())
 //                startActivity<ViewContactActivity>(contactStr to EXTRA_CONTACT)
             }
@@ -130,13 +130,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadContacts() {
         progress_bar.show()
+        val fabListStr = PrefModel.favouriteList
+        var favouriteModel = FavouriteModel()
+        if (fabListStr.isNotBlank())
+            favouriteModel = convertToClass(fabListStr, FavouriteModel::class.java)
+
+        val fabList = favouriteModel.favouriteList
+
         KontactEx().getAllContacts(this) { map, list ->
             PrefModel.isKontactFetched = true
             progress_bar.hide()
             list.forEach {
                 val model = MyContactModel(
                         contactId = it.contactId, contactName = it.contactName,
-                        contactNumber = it.contactNumber, photoUri = it.photoUri.toString()
+                        contactNumber = it.contactNumber, contactNumberList = it.contactNumberList,
+                        isFavourite = fabList.contains(it.contactId),
+                        photoUri = it.photoUri.toString()
                 )
                 myContacts.add(model)
             }

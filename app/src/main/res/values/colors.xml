@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <color tools:override="true" name="colorPrimary">#3F51B5</color>
-    <color tools:override="true" name="colorPrimaryDark">#303F9F</color>
-    <color tools:override="true" name="colorAccent">#FF4081</color>
-    <color tools:override="true" name="colorWhite">#ffffff</color>
-    <color tools:override="true" name="colorBlack">#000000</color>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorBlack_50">#40000000</color>
 </resources>

@@ -3,7 +3,7 @@ package com.deepak.kontacts.util
 import android.app.Activity
 import android.net.Uri
 import android.provider.ContactsContract
-import com.deepak.kontacts.db.MyContactModel
+import com.deepak.kontacts.model.MyContactModel
 import io.realm.RealmList
 import org.jetbrains.anko.doAsyncResult
 import org.jetbrains.anko.onComplete

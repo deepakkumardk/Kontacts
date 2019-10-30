@@ -1,7 +1,9 @@
 package com.deepak.kontacts.repository
 
 import androidx.lifecycle.LiveData
-import com.deepak.kontacts.db.MyContactModel
+import com.deepak.kontacts.model.FavouriteModel
+import com.deepak.kontacts.model.MyContactModel
+import com.deepak.kontacts.util.log
 import com.deepak.kontacts.viewmodel.asLiveData
 import io.realm.Realm
 import io.realm.RealmResults
@@ -24,8 +26,15 @@ class RealmKontactsRepository(private val realm: Realm?) {
     fun deleteAllKontact() {
         realm?.executeTransaction {
             it.where<MyContactModel>()
-                    .findAllAsync()
+                    .findAll()
                     ?.deleteAllFromRealm()
+        }
+    }
+
+    fun updateFavourite(contactModel: MyContactModel) {
+        realm?.executeTransaction {
+            it.insertOrUpdate(contactModel)
+            log("Favourite completed")
         }
     }
 }

@@ -19,7 +19,7 @@ fun View.show() {
     this.visibility = View.VISIBLE
 }
 
-fun log(message: String) = Log.d("DEBUG", message)
+fun log(message: String) = Log.d("TAG_DK", message)
 
 fun Context.vectorDrawableToBitmap(drawableId: Int): Bitmap? {
     val drawable: Drawable? = ContextCompat.getDrawable(this, drawableId)

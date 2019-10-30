@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.deepak.kontacts.R
-import com.deepak.kontacts.db.MyContactModel
+import com.deepak.kontacts.model.MyContactModel
 import org.jetbrains.anko.find
 
 class ContactsAdapter(private var contactList: MutableList<MyContactModel>,
@@ -25,7 +25,6 @@ class ContactsAdapter(private var contactList: MutableList<MyContactModel>,
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         val contact = contactList[position]
         holder.name.text = contact.contactName
-        holder.mobile.text = contact.contactNumber
 
         Glide.with(holder.itemView.context)
                 .load(Uri.parse(contact.photoUri))
@@ -47,7 +46,6 @@ class ContactsAdapter(private var contactList: MutableList<MyContactModel>,
 
     class ContactViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var name = view.find<TextView>(R.id.contact_name)
-        var mobile = view.find<TextView>(R.id.contact_mobile)
         var image = view.find<ImageView>(R.id.contact_image)
     }
 }
