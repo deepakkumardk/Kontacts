@@ -1,5 +1,6 @@
 package com.deepak.kontacts.ui
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.deepak.kontacts.R
-import com.deepakkumardk.kontactpickerlib.model.MyContacts
+import com.deepak.kontacts.db.MyContactModel
 import org.jetbrains.anko.find
 
-class ContactsAdapter(private var contactList: MutableList<MyContacts>,
-                      private val listener: (MyContacts, Int, View,View) -> Unit) :
+class ContactsAdapter(private var contactList: MutableList<MyContactModel>,
+                      private val listener: (MyContactModel, Int, View, View) -> Unit) :
         RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int): ContactViewHolder {
@@ -27,19 +28,19 @@ class ContactsAdapter(private var contactList: MutableList<MyContacts>,
         holder.mobile.text = contact.contactNumber
 
         Glide.with(holder.itemView.context)
-                .load(contact.photoUri)
+                .load(Uri.parse(contact.photoUri))
                 .apply(RequestOptions().fitCenter())
                 .placeholder(R.drawable.ic_person)
                 .error(R.drawable.ic_person)
                 .fallback(R.drawable.ic_person)
                 .into(holder.image)
-        holder.image.setOnClickListener { listener(contact, holder.adapterPosition, it,holder.image) }
-        holder.name.setOnClickListener { listener(contact, holder.adapterPosition, it,holder.image) }
+        holder.image.setOnClickListener { listener(contact, holder.adapterPosition, it, holder.image) }
+        holder.name.setOnClickListener { listener(contact, holder.adapterPosition, it, holder.image) }
     }
 
     override fun getItemCount() = contactList.size
 
-    fun updateList(data: MutableList<MyContacts>) {
+    fun updateList(data: MutableList<MyContactModel>) {
         contactList = data
         notifyDataSetChanged()
     }
