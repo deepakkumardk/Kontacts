@@ -16,6 +16,7 @@ class KontactEx {
         val startTime = System.currentTimeMillis()
         val projection = arrayOf(
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+                ContactsContract.Contacts.STARRED,
                 ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.CommonDataKinds.Phone.NUMBER
         )
@@ -28,22 +29,29 @@ class KontactEx {
                     null, null, null
             )?.use {
                 val idIndex = it.getColumnIndex(ContactsContract.Data.CONTACT_ID)
+                val starredIndex = it.getColumnIndex(ContactsContract.Contacts.STARRED)
                 val nameIndex = it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
                 val numberIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
 
                 var id: String
                 var name: String
                 var number: String
+                var starred: Int
                 while (it.moveToNext()) {
                     val contacts = MyContactModel()
                     id = it.getLong(idIndex).toString()
                     name = it.getString(nameIndex)
+                    starred = it.getInt(starredIndex)
                     number = it.getString(numberIndex).replace(" ", "")
 
                     contacts.contactId = id
                     contacts.contactName = name
                     contacts.contactNumber = number
+                    contacts.isFavourite = starred == 1
                     contacts.contactNumberList = RealmList(number)
+
+                    if (contacts.isFavourite)
+                        log(contacts.contactId)
 
                     if (contactMap[id] != null) {
                         val list = contactMap[id]?.contactNumberList!!

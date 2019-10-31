@@ -37,4 +37,5 @@ class RealmKontactsRepository(private val realm: Realm?) {
             log("Favourite completed")
         }
     }
+
 }

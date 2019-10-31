@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/navigation_contacts">
+
+    <fragment
+        android:id="@+id/navigation_contacts"
+        android:name="com.deepak.kontacts.ui.home.ContactsFragment"
+        android:label="@string/title_contacts"
+        tools:layout="@layout/fragment_contacts" />
+
+    <fragment
+        android:id="@+id/navigation_favourite"
+        android:name="com.deepak.kontacts.ui.favourite.FavouriteFragment"
+        android:label="@string/title_favourite"
+        tools:layout="@layout/fragment_favourite" />
+
+    <fragment
+        android:id="@+id/navigation_calls"
+        android:name="com.deepak.kontacts.ui.calls.CallsFragment"
+        android:label="@string/title_calls"
+        tools:layout="@layout/fragment_calls" />
+</navigation>

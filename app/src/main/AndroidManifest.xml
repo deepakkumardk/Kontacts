@@ -17,10 +17,14 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".ui.KontactsActivity"
+            android:label="@string/title_activity_kontacts"></activity>
+        <activity
             android:name=".ui.MainActivity"
             android:configChanges="keyboardHidden|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
