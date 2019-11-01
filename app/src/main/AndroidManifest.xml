@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
 
     <application
         android:name=".KontactsApp"
@@ -18,15 +19,22 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ui.KontactsActivity"
-            android:label="@string/title_activity_kontacts"></activity>
-        <activity
-            android:name=".ui.MainActivity"
-            android:configChanges="keyboardHidden|orientation">
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/title_activity_kontacts">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.MainActivity"
+            android:configChanges="keyboardHidden|orientation">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
         </activity>
         <activity
             android:name=".ui.ViewContactActivity"

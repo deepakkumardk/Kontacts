@@ -116,8 +116,7 @@ class MainActivity : AppCompatActivity() {
         if (contactReadPermission && callPhonePermission) {
             handleFetchContacts()
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), PERMISSION_READ_CONTACT)
-            requestPermissions(arrayOf(Manifest.permission.CALL_PHONE), PERMISSION_CALL_PHONE)
+            requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE), PERMISSION_READ_CONTACT)
         }
     }
 
@@ -129,6 +128,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadContacts() {
+        myContacts.clear()
         progress_bar.show()
         val fabListStr = PrefModel.favouriteList
         var favouriteModel = FavouriteModel()
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
 
         val fabList = favouriteModel.favouriteList
 
-        KontactEx().getAllContacts(this) { map, list ->
+        KontactEx().getFavouriteContacts(this) { map, list ->
             PrefModel.isKontactFetched = true
             progress_bar.hide()
             list.forEach {
