@@ -8,47 +8,53 @@ import io.realm.RealmList
 import org.jetbrains.anko.doAsyncResult
 import org.jetbrains.anko.onComplete
 
+const val CONTACT_ID = ContactsContract.Data.CONTACT_ID
+const val STARRED = ContactsContract.Contacts.STARRED
+const val DISPLAY_NAME = ContactsContract.Contacts.DISPLAY_NAME
+const val PHOTO_THUMBNAIL_URI = ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
+const val PHOTO_URI = ContactsContract.Contacts.PHOTO_URI
+const val NUMBER = ContactsContract.CommonDataKinds.Phone.NUMBER
 
-@Suppress("ConstantConditionIf")
 class KontactEx {
+
+    val CONTENT_URI: Uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
 
     fun getAllContacts(activity: Activity?, onCompleted: (MutableMap<String, MyContactModel>, MutableList<MyContactModel>) -> Unit) {
         val startTime = System.currentTimeMillis()
         val projection = arrayOf(
-                ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
-                ContactsContract.Contacts.STARRED,
-                ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER
+                CONTACT_ID, STARRED, DISPLAY_NAME, PHOTO_THUMBNAIL_URI, PHOTO_URI, NUMBER
         )
 
         val contactMap = mutableMapOf<String, MyContactModel>()
         val cr = activity?.contentResolver
         doAsyncResult {
             cr?.query(
-                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection,
-                    null, null, null
+                    CONTENT_URI, projection, null, null, null
             )?.use {
-                val idIndex = it.getColumnIndex(ContactsContract.Data.CONTACT_ID)
-                val starredIndex = it.getColumnIndex(ContactsContract.Contacts.STARRED)
-                val nameIndex = it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
-                val numberIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                val idIndex = it.getColumnIndex(CONTACT_ID)
+                val starredIndex = it.getColumnIndex(STARRED)
+                val nameIndex = it.getColumnIndex(DISPLAY_NAME)
+                val thumbIndex = it.getColumnIndex(PHOTO_THUMBNAIL_URI)
+                val photoIndex = it.getColumnIndex(PHOTO_URI)
+                val numberIndex = it.getColumnIndex(NUMBER)
 
-                var id: String
-                var name: String
-                var number: String
-                var starred: Int
                 while (it.moveToNext()) {
-                    val contacts = MyContactModel()
-                    id = it.getLong(idIndex).toString()
-                    name = it.getString(nameIndex)
-                    starred = it.getInt(starredIndex)
-                    number = it.getString(numberIndex).replace(" ", "")
+                    val id = it.getLong(idIndex).toString()
+                    val name = it.getString(nameIndex)
+                    val thumblUri = it.getString(thumbIndex)
+                    val photoUri = it.getString(photoIndex)
+                    val starred = it.getInt(starredIndex)
+                    val number = it.getString(numberIndex).replace(" ", "")
 
-                    contacts.contactId = id
-                    contacts.contactName = name
-                    contacts.contactNumber = number
-                    contacts.isFavourite = starred == 1
-                    contacts.contactNumberList = RealmList(number)
+                    val contacts = MyContactModel().apply {
+                        contactId = id
+                        contactName = name
+                        contactNumber = number
+                        isFavourite = starred == 1
+                        thumbnailUri = thumblUri
+                        displayUri = photoUri
+                        contactNumberList = RealmList(number)
+                    }
 
                     if (contacts.isFavourite)
                         log(contacts.contactId)
@@ -75,37 +81,15 @@ class KontactEx {
 
     private fun filterContactsFromMap(contactMap: MutableMap<String, MyContactModel>): MutableList<MyContactModel> {
         val myKontacts: MutableList<MyContactModel> = arrayListOf()
-        val phoneList = arrayListOf<String>()
         contactMap.entries.forEach {
             val contact = it.value
 
-            val isUriEnable = true
-            val isLargeUriEnable = true
-            var photoUri: Uri? = null
-            if (isUriEnable) {
-                photoUri = if (isLargeUriEnable)
-                    getContactImageLargeUri(contact.contactId?.toLong()!!)
-                else
-                    getContactImageUri(contact.contactId?.toLong()!!)
-            }
-
-            /*contact.contactNumberList.forEach { number ->
-                if (!phoneList.contains(number)) {
-                    val newContact = MyContactModel(
-                            contactId = contact.contactId,
-                            contactName = contact.contactName,
-                            contactNumber = number, photoUri = photoUri.toString(),
-                            contactNumberList = contact.contactNumberList
-                    )
-                    myKontacts.add(newContact)
-                    phoneList.add(number)
-                }
-            }*/
             val newContact = MyContactModel(
                     contactId = contact.contactId,
                     contactName = contact.contactName,
                     contactNumber = contact.contactNumberList[0],
-                    photoUri = photoUri.toString(),
+                    displayUri = contact.displayUri,
+                    thumbnailUri = contact.thumbnailUri,
                     contactNumberList = contact.contactNumberList
             )
             myKontacts.add(newContact)

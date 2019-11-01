@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                         contactId = it.contactId, contactName = it.contactName,
                         contactNumber = it.contactNumber, contactNumberList = it.contactNumberList,
                         isFavourite = fabList.contains(it.contactId),
-                        photoUri = it.photoUri.toString()
+                        displayUri = it.displayUri.toString()
                 )
                 myContacts.add(model)
             }

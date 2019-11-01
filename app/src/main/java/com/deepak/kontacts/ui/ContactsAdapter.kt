@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.deepak.kontacts.R
 import com.deepak.kontacts.model.MyContactModel
+import com.deepak.kontacts.util.toUri
 import org.jetbrains.anko.find
 
 class ContactsAdapter(private var contactList: MutableList<MyContactModel>,
@@ -25,10 +26,13 @@ class ContactsAdapter(private var contactList: MutableList<MyContactModel>,
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         val contact = contactList[position]
         holder.name.text = contact.contactName
+        val context = holder.itemView.context
 
-        Glide.with(holder.itemView.context)
-                .load(Uri.parse(contact.photoUri))
+        Glide.with(context)
+                .load(contact.displayUri?.toUri())
                 .apply(RequestOptions().fitCenter())
+                .thumbnail(Glide.with(context)
+                        .load(contact.thumbnailUri?.toUri()))
                 .placeholder(R.drawable.ic_person)
                 .error(R.drawable.ic_person)
                 .fallback(R.drawable.ic_person)
@@ -48,4 +52,5 @@ class ContactsAdapter(private var contactList: MutableList<MyContactModel>,
         var name = view.find<TextView>(R.id.contact_name)
         var image = view.find<ImageView>(R.id.contact_image)
     }
+
 }

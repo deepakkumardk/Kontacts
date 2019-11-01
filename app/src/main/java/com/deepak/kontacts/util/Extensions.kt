@@ -37,11 +37,13 @@ fun Context.vectorDrawableToBitmap(drawableId: Int): Bitmap? {
     }
 }
 
+fun String.toUri() = Uri.parse(this)
+
 fun getContactImageUri(contactId: Long): Uri? {
     val person = ContentUris.withAppendedId(
             ContactsContract.Contacts.CONTENT_URI, contactId
     )
-    return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY)
+    return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.PHOTO_THUMBNAIL_URI)
 }
 
 fun getContactImageLargeUri(contactId: Long): Uri? {

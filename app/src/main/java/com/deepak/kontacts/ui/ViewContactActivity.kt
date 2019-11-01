@@ -12,10 +12,7 @@ import com.bumptech.glide.Glide
 import com.deepak.kontacts.R
 import com.deepak.kontacts.model.FavouriteModel
 import com.deepak.kontacts.model.MyContactModel
-import com.deepak.kontacts.util.EXTRA_CONTACT
-import com.deepak.kontacts.util.PrefModel
-import com.deepak.kontacts.util.convertToClass
-import com.deepak.kontacts.util.convertToString
+import com.deepak.kontacts.util.*
 import com.deepak.kontacts.viewmodel.RealmKontactsViewModel
 import kotlinx.android.synthetic.main.activity_view_contact.*
 import org.jetbrains.anko.backgroundColor
@@ -40,6 +37,7 @@ class ViewContactActivity : AppCompatActivity() {
                 textSize = 16f
                 padding = 12
                 text = it
+                background = android.R.drawable.list_selector_background.toDrawable()
                 backgroundColor = android.R.color.white
                 setCompoundDrawablesWithIntrinsicBounds(insetDrawable, null, null, null)
             }
@@ -48,7 +46,9 @@ class ViewContactActivity : AppCompatActivity() {
 
         view_contact_name.text = contact.contactName
         Glide.with(this)
-                .load(contact.photoUri)
+                .load(contact.displayUri)
+                .thumbnail(Glide.with(this)
+                        .load(contact.thumbnailUri?.toUri()))
                 .placeholder(R.drawable.ic_person)
                 .error(R.drawable.ic_person)
                 .fallback(R.drawable.ic_person)
@@ -98,5 +98,7 @@ class ViewContactActivity : AppCompatActivity() {
         PrefModel.favouriteList = favouriteModel.convertToString() ?: ""
 
     }
+
+    fun Int.toDrawable() = ContextCompat.getDrawable(this@ViewContactActivity,this)
 
 }

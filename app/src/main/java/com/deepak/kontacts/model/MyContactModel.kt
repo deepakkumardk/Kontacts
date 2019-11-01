@@ -10,6 +10,7 @@ open class MyContactModel(
         var contactName: String? = null,
         var contactNumber: String? = null,
         var isFavourite: Boolean = false,
-        var photoUri: String? = null,
+        var displayUri: String? = null,
+        var thumbnailUri: String? = null,
         var contactNumberList: RealmList<String> = RealmList()
 ) : RealmObject() {}
