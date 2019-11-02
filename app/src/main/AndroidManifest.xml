@@ -20,7 +20,7 @@
         <activity
             android:name=".ui.KontactsActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:label="@string/title_activity_kontacts">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,17 +28,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MainActivity"
-            android:configChanges="keyboardHidden|orientation">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
-        <activity
             android:name=".ui.ViewContactActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.KontactsActivity" />
     </application>
 
 </manifest>

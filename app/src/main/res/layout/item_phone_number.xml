@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/text_phone_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_call_black"
+        android:drawableLeft="@drawable/ic_call_black"
+        android:drawablePadding="@dimen/dimen_16"
+        android:padding="@dimen/dimen_12"
+        android:textColor="@color/colorBlack"
+        tools:text="Phone Number" />
+
+</androidx.cardview.widget.CardView>

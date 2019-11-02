@@ -19,7 +19,6 @@ import com.deepak.kontacts.ui.ViewContactActivity
 import com.deepak.kontacts.ui.adapter.ContactsAdapter
 import com.deepak.kontacts.util.*
 import kotlinx.android.synthetic.main.fragment_main.*
-import org.jetbrains.anko.support.v4.makeCall
 import org.jetbrains.anko.support.v4.toast
 
 class ContactsFragment : Fragment() {
@@ -58,7 +57,6 @@ class ContactsFragment : Fragment() {
             R.id.contact_image -> {
                 val phone = String.format("tel: %s", contact?.contactNumber)
                 val intent = Intent(Intent.ACTION_CALL, Uri.parse(phone))
-//        makeCall(contact.contactNumber[0])
                 if (intent.resolveActivity(activity?.packageManager!!) != null) {
                     if (ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -67,7 +65,7 @@ class ContactsFragment : Fragment() {
                             toast("Allow this application to make phone calls")
                         }
                     }
-            startActivity(intent)
+                    startActivity(intent)
                 } else {
                     toast("Can't make call without permission")
                 }

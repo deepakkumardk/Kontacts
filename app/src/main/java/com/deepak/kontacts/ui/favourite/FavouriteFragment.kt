@@ -56,7 +56,6 @@ class FavouriteFragment : Fragment() {
             R.id.contact_image -> {
                 val phone = String.format("tel: %s", contact?.contactNumber)
                 val intent = Intent(Intent.ACTION_CALL, Uri.parse(phone))
-//        makeCall(contact.contactNumber[0])
                 if (intent.resolveActivity(activity?.packageManager!!) != null) {
                     if (ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -65,15 +64,13 @@ class FavouriteFragment : Fragment() {
                             toast("Allow this application to make phone calls")
                         }
                     }
-                    toast("Will make call")
-//            startActivity(intent)
+            startActivity(intent)
                 } else {
                     toast("Can't make call without permission")
                 }
             }
             R.id.contact_name -> {
                 val contactStr = contact?.convertToString()!!
-//                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, "UserImage")
                 val intent = Intent(activity, ViewContactActivity::class.java)
                 intent.putExtra(EXTRA_CONTACT, contactStr)
                 startActivity(intent)

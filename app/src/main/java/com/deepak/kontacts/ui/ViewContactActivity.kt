@@ -1,19 +1,24 @@
 package com.deepak.kontacts.ui
 
-import android.graphics.Color
-import android.graphics.drawable.InsetDrawable
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
 import com.deepak.kontacts.R
 import com.deepak.kontacts.model.MyContactModel
-import com.deepak.kontacts.util.*
+import com.deepak.kontacts.util.EXTRA_CONTACT
+import com.deepak.kontacts.util.PERMISSION_CALL_PHONE
+import com.deepak.kontacts.util.convertToClass
+import com.deepak.kontacts.util.toUri
 import kotlinx.android.synthetic.main.activity_view_contact.*
-import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.padding
+import org.jetbrains.anko.toast
 
 class ViewContactActivity : AppCompatActivity() {
     private lateinit var contact: MyContactModel
@@ -25,19 +30,16 @@ class ViewContactActivity : AppCompatActivity() {
         val contactStr = intent?.getStringExtra(EXTRA_CONTACT)!!
         contact = convertToClass(contactStr, MyContactModel::class.java)
 
-        val drawable = ContextCompat.getDrawable(this, R.drawable.ic_call_black)
-        val insetDrawable = InsetDrawable(drawable, 0, 0, 8, 0)
+        linear_mobiles.removeAllViews()
         contact.contactNumberList.forEach {
-            val textView = TextView(this).apply {
-                setTextColor(Color.BLACK)
-                textSize = 16f
-                padding = 12
-                text = it
-                background = android.R.drawable.list_selector_background.toDrawable()
-                backgroundColor = android.R.color.white
-                setCompoundDrawablesWithIntrinsicBounds(insetDrawable, null, null, null)
+            val number = it
+            layoutInflater.inflate(R.layout.item_phone_number, linear_mobiles, false).apply {
+                linear_mobiles.addView(this)
+                val textView = this.findViewById(R.id.text_phone_number) as TextView
+                textView.text = number
+
+                setOnClickListener { makeCall(number) }
             }
-            linear_mobiles.addView(textView)
         }
 
         view_contact_name.text = contact.contactName
@@ -72,6 +74,18 @@ class ViewContactActivity : AppCompatActivity() {
         supportFinishAfterTransition()
     }
 
-    private fun Int.toDrawable() = ContextCompat.getDrawable(this@ViewContactActivity, this)
-
+    private fun makeCall(number: String) {
+        val phone = String.format("tel: %s", number)
+        val intent = Intent(Intent.ACTION_CALL, Uri.parse(phone))
+        if (intent.resolveActivity(this.packageManager!!) != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(arrayOf(Manifest.permission.CALL_PHONE), PERMISSION_CALL_PHONE)
+                } else {
+                    toast("Allow this application to make phone calls")
+                }
+            }
+            startActivity(intent)
+        }
+    }
 }
