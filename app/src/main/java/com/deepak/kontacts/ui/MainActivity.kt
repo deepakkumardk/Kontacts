@@ -20,6 +20,7 @@ import com.chibatching.kotpref.Kotpref
 import com.deepak.kontacts.R
 import com.deepak.kontacts.model.FavouriteModel
 import com.deepak.kontacts.model.MyContactModel
+import com.deepak.kontacts.ui.adapter.ContactsAdapter
 import com.deepak.kontacts.util.*
 import com.deepak.kontacts.viewmodel.RealmKontactsViewModel
 import kotlinx.android.synthetic.main.activity_main.*

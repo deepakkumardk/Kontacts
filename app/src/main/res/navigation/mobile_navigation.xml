@@ -9,17 +9,17 @@
         android:id="@+id/navigation_contacts"
         android:name="com.deepak.kontacts.ui.home.ContactsFragment"
         android:label="@string/title_contacts"
-        tools:layout="@layout/fragment_contacts" />
+        tools:layout="@layout/fragment_main" />
 
     <fragment
         android:id="@+id/navigation_favourite"
         android:name="com.deepak.kontacts.ui.favourite.FavouriteFragment"
         android:label="@string/title_favourite"
-        tools:layout="@layout/fragment_favourite" />
+        tools:layout="@layout/fragment_main" />
 
     <fragment
         android:id="@+id/navigation_calls"
         android:name="com.deepak.kontacts.ui.calls.CallsFragment"
         android:label="@string/title_calls"
-        tools:layout="@layout/fragment_calls" />
+        tools:layout="@layout/fragment_main" />
 </navigation>

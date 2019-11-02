@@ -7,9 +7,11 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.ContactsContract
+import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
+import java.util.concurrent.TimeUnit
 
 fun View.hide() {
     this.visibility = View.GONE
@@ -37,7 +39,23 @@ fun Context.vectorDrawableToBitmap(drawableId: Int): Bitmap? {
     }
 }
 
-fun String.toUri() = Uri.parse(this)
+fun String.toUri(): Uri? = Uri.parse(this)
+
+fun Long.toDate(): CharSequence? {
+    return DateUtils.getRelativeTimeSpanString(this)
+}
+
+fun Long?.toDuration(): String {
+    val hours = TimeUnit.SECONDS.toHours(this!!).addLeadingZero()
+    val minutes = TimeUnit.SECONDS.toMinutes(this) % TimeUnit.HOURS.toMinutes(1)
+    val seconds = TimeUnit.SECONDS.toSeconds(this) % TimeUnit.MINUTES.toSeconds(1)
+    val duration = String.format("%02d:%02d", minutes, seconds)
+    return if (hours != "00") "$hours:$duration" else duration
+}
+
+fun Long.addLeadingZero(): String {
+    return String.format("%02d", this)
+}
 
 fun getContactImageUri(contactId: Long): Uri? {
     val person = ContentUris.withAppendedId(
