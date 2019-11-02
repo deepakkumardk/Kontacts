@@ -15,20 +15,16 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.chibatching.kotpref.Kotpref
 import com.deepak.kontacts.R
-import com.deepak.kontacts.model.FavouriteModel
 import com.deepak.kontacts.model.MyContactModel
 import com.deepak.kontacts.ui.ViewContactActivity
 import com.deepak.kontacts.ui.adapter.ContactsAdapter
 import com.deepak.kontacts.util.*
-import com.deepak.kontacts.viewmodel.RealmKontactsViewModel
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.jetbrains.anko.support.v4.toast
 
 class FavouriteFragment : Fragment() {
     private lateinit var contactsAdapter: ContactsAdapter
     private var myContacts: MutableList<MyContactModel> = mutableListOf()
-
-    private lateinit var realmViewModel: RealmKontactsViewModel
 
     private lateinit var favouriteViewModel: FavouriteViewModel
 
@@ -56,7 +52,6 @@ class FavouriteFragment : Fragment() {
             hasFixedSize()
         }
         loadContacts()
-        realmViewModel = ViewModelProviders.of(this).get(RealmKontactsViewModel::class.java)
     }
 
     private fun onItemClick(contact: MyContactModel?, position: Int, view: View, imageView: View) {
@@ -80,7 +75,7 @@ class FavouriteFragment : Fragment() {
                 }
             }
             R.id.contact_name -> {
-                val contactStr = contact?.getRealmCopy()?.convertToString()!!
+                val contactStr = contact?.convertToString()!!
 //                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, "UserImage")
                 val intent = Intent(activity, ViewContactActivity::class.java)
                 intent.putExtra(EXTRA_CONTACT, contactStr)
@@ -92,12 +87,6 @@ class FavouriteFragment : Fragment() {
     private fun loadContacts() {
         myContacts.clear()
         progress_bar.show()
-        val fabListStr = PrefModel.favouriteList
-        var favouriteModel = FavouriteModel()
-        if (fabListStr.isNotBlank())
-            favouriteModel = convertToClass(fabListStr, FavouriteModel::class.java)
-
-        val fabList = favouriteModel.favouriteList
 
         KontactEx().getFavouriteContacts(activity) { map, list ->
             PrefModel.isKontactFetched = true
@@ -106,12 +95,11 @@ class FavouriteFragment : Fragment() {
                 val model = MyContactModel(
                         contactId = it.contactId, contactName = it.contactName,
                         contactNumber = it.contactNumber, contactNumberList = it.contactNumberList,
-                        isFavourite = fabList.contains(it.contactId),
+                        isFavourite = it.isFavourite,
                         displayUri = it.displayUri.toString()
                 )
                 myContacts.add(model)
             }
-            realmViewModel.saveAllKontacts(myContacts)
             contactsAdapter.updateList(myContacts)
         }
     }

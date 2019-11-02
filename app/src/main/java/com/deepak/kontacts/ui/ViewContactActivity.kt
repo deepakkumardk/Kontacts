@@ -7,20 +7,16 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.deepak.kontacts.R
-import com.deepak.kontacts.model.FavouriteModel
 import com.deepak.kontacts.model.MyContactModel
 import com.deepak.kontacts.util.*
-import com.deepak.kontacts.viewmodel.RealmKontactsViewModel
 import kotlinx.android.synthetic.main.activity_view_contact.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.padding
 
 class ViewContactActivity : AppCompatActivity() {
     private lateinit var contact: MyContactModel
-    private lateinit var realmViewModel: RealmKontactsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,12 +50,9 @@ class ViewContactActivity : AppCompatActivity() {
                 .fallback(R.drawable.ic_person)
                 .into(view_contact_image)
 
-        initViewModel()
         fab_favourite.setOnClickListener {
             contact.isFavourite = !contact.isFavourite
             it.isSelected = contact.isFavourite
-            saveFavouriteToPref(contact)
-            realmViewModel.updateFavourite(contact)
         }
         fab_favourite.isSelected = contact.isFavourite
 
@@ -79,26 +72,6 @@ class ViewContactActivity : AppCompatActivity() {
         supportFinishAfterTransition()
     }
 
-
-    private fun initViewModel() {
-        realmViewModel = ViewModelProviders.of(this).get(RealmKontactsViewModel::class.java)
-    }
-
-    private fun saveFavouriteToPref(contact: MyContactModel) {
-        val list = PrefModel.favouriteList
-        var favouriteModel = FavouriteModel()
-        if (list.isNotBlank())
-            favouriteModel = convertToClass(list, FavouriteModel::class.java)
-
-        if (contact.isFavourite)
-            favouriteModel.favouriteList.add(contact.contactId)
-        else
-            favouriteModel.favouriteList.remove(contact.contactId)
-
-        PrefModel.favouriteList = favouriteModel.convertToString() ?: ""
-
-    }
-
-    fun Int.toDrawable() = ContextCompat.getDrawable(this@ViewContactActivity,this)
+    private fun Int.toDrawable() = ContextCompat.getDrawable(this@ViewContactActivity, this)
 
 }

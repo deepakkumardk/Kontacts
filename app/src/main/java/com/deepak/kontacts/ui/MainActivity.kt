@@ -13,24 +13,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.chibatching.kotpref.Kotpref
 import com.deepak.kontacts.R
-import com.deepak.kontacts.model.FavouriteModel
 import com.deepak.kontacts.model.MyContactModel
 import com.deepak.kontacts.ui.adapter.ContactsAdapter
 import com.deepak.kontacts.util.*
-import com.deepak.kontacts.viewmodel.RealmKontactsViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
 
 class MainActivity : AppCompatActivity() {
     private lateinit var contactsAdapter: ContactsAdapter
     private var myContacts: MutableList<MyContactModel> = mutableListOf()
-
-    private lateinit var realmViewModel: RealmKontactsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         Kotpref.init(this)
         checkPermission()
 
-        initViewModel()
         contactsAdapter = ContactsAdapter(myContacts, this::onItemClick)
         recycler_view.apply {
             addItemDecoration(GridSpacingItemDecoration(2, 8, false))
@@ -57,7 +50,6 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.action_refresh -> {
-                realmViewModel.deleteAllKontacts()
                 loadContacts()
                 true
             }
@@ -67,17 +59,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == PERMISSION_READ_CONTACT && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            handleFetchContacts()
+            loadContacts()
         }
-    }
-
-    private fun initViewModel() {
-        realmViewModel = ViewModelProviders.of(this).get(RealmKontactsViewModel::class.java)
-        realmViewModel.getLiveKontacts().observe(this, Observer {
-            contactsAdapter.updateList(it)
-            if (it.isNullOrEmpty())
-                loadContacts()
-        })
     }
 
     private fun onItemClick(contact: MyContactModel?, position: Int, view: View, imageView: View) {
@@ -101,7 +84,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             R.id.contact_name -> {
-                val contactStr = contact?.getRealmCopy()?.convertToString()!!
+                val contactStr = contact?.convertToString()!!
                 val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, "UserImage")
                 val intent = Intent(this, ViewContactActivity::class.java)
                 intent.putExtra(EXTRA_CONTACT, contactStr)
@@ -115,42 +98,29 @@ class MainActivity : AppCompatActivity() {
         val contactReadPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
         val callPhonePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
         if (contactReadPermission && callPhonePermission) {
-            handleFetchContacts()
+            loadContacts()
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE), PERMISSION_READ_CONTACT)
         }
-    }
-
-    private fun handleFetchContacts() {
-        if (PrefModel.isKontactFetched)
-            log("load from room/realm")
-        else
-            loadContacts()
     }
 
     private fun loadContacts() {
         myContacts.clear()
         progress_bar.show()
         val fabListStr = PrefModel.favouriteList
-        var favouriteModel = FavouriteModel()
-        if (fabListStr.isNotBlank())
-            favouriteModel = convertToClass(fabListStr, FavouriteModel::class.java)
 
-        val fabList = favouriteModel.favouriteList
-
-        KontactEx().getFavouriteContacts(this) { map, list ->
+        KontactEx().getAllContacts(this) { map, list ->
             PrefModel.isKontactFetched = true
             progress_bar.hide()
             list.forEach {
                 val model = MyContactModel(
                         contactId = it.contactId, contactName = it.contactName,
                         contactNumber = it.contactNumber, contactNumberList = it.contactNumberList,
-                        isFavourite = fabList.contains(it.contactId),
+                        isFavourite = it.isFavourite,
                         displayUri = it.displayUri.toString()
                 )
                 myContacts.add(model)
             }
-            realmViewModel.saveAllKontacts(myContacts)
             contactsAdapter.updateList(myContacts)
         }
     }

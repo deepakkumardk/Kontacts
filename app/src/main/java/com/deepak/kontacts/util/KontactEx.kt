@@ -4,7 +4,6 @@ import android.app.Activity
 import android.net.Uri
 import android.provider.ContactsContract
 import com.deepak.kontacts.model.MyContactModel
-import io.realm.RealmList
 import org.jetbrains.anko.doAsyncResult
 import org.jetbrains.anko.onComplete
 
@@ -53,7 +52,7 @@ class KontactEx {
                         isFavourite = starred == 1
                         thumbnailUri = thumblUri
                         displayUri = photoUri
-                        contactNumberList = RealmList(number)
+                        contactNumberList = arrayListOf(number)
                     }
 
                     if (contacts.isFavourite)
@@ -114,7 +113,7 @@ class KontactEx {
                         isFavourite = starred == 1
                         thumbnailUri = thumblUri
                         displayUri = photoUri
-                        contactNumberList = RealmList(number)
+                        contactNumberList = arrayListOf(number)
                     }
 
                     if (contacts.isFavourite)

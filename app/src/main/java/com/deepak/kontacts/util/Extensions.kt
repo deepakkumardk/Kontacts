@@ -1,16 +1,9 @@
 package com.deepak.kontacts.util
 
-import android.content.ContentUris
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.provider.ContactsContract
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.View
-import androidx.core.content.ContextCompat
 import java.util.concurrent.TimeUnit
 
 fun View.hide() {
@@ -23,27 +16,13 @@ fun View.show() {
 
 fun log(message: String) = Log.d("TAG_DK", message)
 
-fun Context.vectorDrawableToBitmap(drawableId: Int): Bitmap? {
-    val drawable: Drawable? = ContextCompat.getDrawable(this, drawableId)
-    val bitmap: Bitmap
-
-    return when {
-        drawable != null -> {
-            bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-            drawable.setBounds(0, 0, canvas.width, canvas.height)
-            drawable.draw(canvas)
-            bitmap
-        }
-        else -> null
-    }
-}
-
 fun String.toUri(): Uri? = Uri.parse(this)
 
 fun Long.toDate(): CharSequence? {
     return DateUtils.getRelativeTimeSpanString(this)
 }
+
+fun Long.addLeadingZero() = String.format("%02d", this)
 
 fun Long?.toDuration(): String {
     val hours = TimeUnit.SECONDS.toHours(this!!).addLeadingZero()
@@ -51,22 +30,4 @@ fun Long?.toDuration(): String {
     val seconds = TimeUnit.SECONDS.toSeconds(this) % TimeUnit.MINUTES.toSeconds(1)
     val duration = String.format("%02d:%02d", minutes, seconds)
     return if (hours != "00") "$hours:$duration" else duration
-}
-
-fun Long.addLeadingZero(): String {
-    return String.format("%02d", this)
-}
-
-fun getContactImageUri(contactId: Long): Uri? {
-    val person = ContentUris.withAppendedId(
-            ContactsContract.Contacts.CONTENT_URI, contactId
-    )
-    return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.PHOTO_THUMBNAIL_URI)
-}
-
-fun getContactImageLargeUri(contactId: Long): Uri? {
-    val person = ContentUris.withAppendedId(
-            ContactsContract.Contacts.CONTENT_URI, contactId
-    )
-    return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.DISPLAY_PHOTO)
 }
