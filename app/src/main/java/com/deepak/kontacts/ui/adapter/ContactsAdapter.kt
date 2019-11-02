@@ -17,8 +17,9 @@ class ContactsAdapter(private var contactList: MutableList<MyContactModel>,
                       private val listener: (MyContactModel, Int, View, View) -> Unit) :
         RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>() {
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int): ContactViewHolder {
-        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_contact, viewGroup, false)
+    override fun onCreateViewHolder(parent: ViewGroup, position: Int): ContactViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_contact, parent, false)
+        view.minimumHeight = parent.measuredHeight / 2
         return ContactViewHolder(view)
     }
 

@@ -13,13 +13,13 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
-import com.chibatching.kotpref.Kotpref
 import com.deepak.kontacts.R
 import com.deepak.kontacts.model.MyContactModel
 import com.deepak.kontacts.ui.ViewContactActivity
 import com.deepak.kontacts.ui.adapter.ContactsAdapter
 import com.deepak.kontacts.util.*
 import kotlinx.android.synthetic.main.fragment_main.*
+import org.jetbrains.anko.support.v4.makeCall
 import org.jetbrains.anko.support.v4.toast
 
 class ContactsFragment : Fragment() {
@@ -42,7 +42,6 @@ class ContactsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Kotpref.init(context!!)
         contactsAdapter = ContactsAdapter(myContacts, this::onItemClick)
         recycler_view.apply {
             addItemDecoration(GridSpacingItemDecoration(2, 8, false))
@@ -68,15 +67,13 @@ class ContactsFragment : Fragment() {
                             toast("Allow this application to make phone calls")
                         }
                     }
-                    toast("Will make call")
-//            startActivity(intent)
+            startActivity(intent)
                 } else {
                     toast("Can't make call without permission")
                 }
             }
             R.id.contact_name -> {
                 val contactStr = contact?.convertToString()!!
-//                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, "UserImage")
                 val intent = Intent(activity, ViewContactActivity::class.java)
                 intent.putExtra(EXTRA_CONTACT, contactStr)
                 startActivity(intent)
@@ -88,8 +85,7 @@ class ContactsFragment : Fragment() {
         myContacts.clear()
         progress_bar.show()
 
-        KontactEx().getAllContacts(activity) { map, list ->
-            PrefModel.isKontactFetched = true
+        contactsViewModel.getAllContacts(activity) { map, list ->
             progress_bar.hide()
             list.forEach {
                 val model = MyContactModel(

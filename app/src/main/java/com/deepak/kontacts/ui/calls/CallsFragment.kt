@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.chibatching.kotpref.Kotpref
 import com.deepak.kontacts.R
 import com.deepak.kontacts.model.CallLogModel
 import com.deepak.kontacts.ui.ViewContactActivity
@@ -42,7 +41,6 @@ class CallsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Kotpref.init(context!!)
         callsAdapter = CallLogAdapter(myContacts, this::onItemClick)
         recycler_view.apply {
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))

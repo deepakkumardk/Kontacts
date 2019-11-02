@@ -6,12 +6,12 @@ import android.util.Log
 import android.view.View
 import java.util.concurrent.TimeUnit
 
-fun View.hide() {
-    this.visibility = View.GONE
+fun View?.hide() {
+    this?.visibility = View.GONE
 }
 
-fun View.show() {
-    this.visibility = View.VISIBLE
+fun View?.show() {
+    this?.visibility = View.VISIBLE
 }
 
 fun log(message: String) = Log.d("TAG_DK", message)

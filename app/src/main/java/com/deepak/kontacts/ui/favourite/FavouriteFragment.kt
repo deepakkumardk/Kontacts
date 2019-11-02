@@ -13,7 +13,6 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
-import com.chibatching.kotpref.Kotpref
 import com.deepak.kontacts.R
 import com.deepak.kontacts.model.MyContactModel
 import com.deepak.kontacts.ui.ViewContactActivity
@@ -35,15 +34,13 @@ class FavouriteFragment : Fragment() {
     ): View? {
         favouriteViewModel =
                 ViewModelProviders.of(this).get(FavouriteViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_main, container, false)
 
-        return root
+        return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Kotpref.init(context!!)
         contactsAdapter = ContactsAdapter(myContacts, this::onItemClick)
         recycler_view.apply {
             addItemDecoration(GridSpacingItemDecoration(2, 8, false))
@@ -88,8 +85,7 @@ class FavouriteFragment : Fragment() {
         myContacts.clear()
         progress_bar.show()
 
-        KontactEx().getFavouriteContacts(activity) { map, list ->
-            PrefModel.isKontactFetched = true
+        favouriteViewModel.getFavouriteContacts(activity) { map, list ->
             progress_bar.hide()
             list.forEach {
                 val model = MyContactModel(
