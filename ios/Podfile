@@ -39,6 +39,8 @@ target 'kontacts' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  pod 'react-native-contacts', :path => '../node_modules/react-native-contacts'
+
   target 'kontactsTests' do
     inherit! :complete
     # Pods for testing
