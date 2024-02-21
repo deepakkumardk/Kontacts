@@ -8,26 +8,25 @@ import React, {
 import {StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import type {Contact} from 'react-native-contacts';
-import {IconButton, Searchbar} from 'react-native-paper';
+import {Searchbar} from 'react-native-paper';
 import {FlashList} from '@shopify/flash-list';
 
 import {ContactUtils, PermissionUtils} from 'src/utils';
-import ListItem from './components/ListItem';
-import LargeCardItem from './components/LargeCardItem';
+import LargeCardItem from 'src/screens/dashboard/components/LargeCardItem';
 
-export const Dashboard = ({navigation}: any) => {
+export const FavouriteScreen = ({navigation}: any) => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const contactsListRef = useRef<Contact[]>([]);
-  const [itemType, setItemType] = useState<'HORIZONTAL' | 'VERTICAL'>(
-    'HORIZONTAL',
-  );
+
   const [searchQuery, setSearchQuery] = useState('');
   let intervalId = useRef();
 
   const getContacts = useCallback(async () => {
     const isGranted = await PermissionUtils.requestContactsPermission();
     if (isGranted) {
-      const res = await ContactUtils.getAll();
+      const res = (await ContactUtils.getAll()).filter(
+        (item) => item.isStarred,
+      );
       contactsListRef.current = contacts;
       setContacts(res);
     }
@@ -54,52 +53,31 @@ export const Dashboard = ({navigation}: any) => {
               setContacts(contactsListRef.current);
             }}
           />
-          <IconButton
-            icon={
-              itemType === 'HORIZONTAL'
-                ? 'format-align-justify'
-                : 'format-columns'
-            }
-            onPress={() =>
-              setItemType((prev) =>
-                prev === 'HORIZONTAL' ? 'VERTICAL' : 'HORIZONTAL',
-              )
-            }
-          />
         </View>
       ),
     });
-  }, [itemType, searchQuery]);
+  }, [searchQuery]);
 
   useEffect(() => {
     getContacts();
   }, []);
 
-  const renderItem = useCallback(
-    ({item}: any) => {
-      return itemType === 'HORIZONTAL' ? (
-        <LargeCardItem
-          contact={item}
-          onPress={() => ContactUtils.call(item)}
-          onIconPress={() => navigation.navigate('ContactDetail', item)}
-        />
-      ) : (
-        <ListItem
-          contact={item}
-          onImagePress={() => navigation.navigate('ContactDetail', item)}
-        />
-      );
-    },
-    [itemType],
-  );
+  const renderItem = useCallback(({item}: any) => {
+    return (
+      <LargeCardItem
+        contact={item}
+        onPress={() => ContactUtils.call(item)}
+        onIconPress={() => navigation.navigate('ContactDetail', item)}
+      />
+    );
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <FlashList
         data={contacts}
-        key={itemType}
         keyExtractor={(item: Contact) => item.recordID}
-        numColumns={itemType === 'HORIZONTAL' ? 2 : 1}
+        numColumns={2}
         renderItem={({item}) => renderItem({item})}
         estimatedItemSize={200}
       />
@@ -117,6 +95,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   searchbar: {
-    width: '90%',
+    width: '105%',
   },
 });

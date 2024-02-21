@@ -1,3 +1,4 @@
+import {Linking} from 'react-native';
 import Contacts, {type Contact} from 'react-native-contacts';
 
 const sortContacts = (contacts: Contact[]) => {
@@ -40,6 +41,14 @@ export const ContactUtils = {
     } catch (error) {
       console.warn('getSearchedContacts= -> error', error);
       return [];
+    }
+  },
+
+  call: async (contact: Contact) => {
+    try {
+      await Linking.openURL('tel:' + contact.phoneNumbers[0]?.number);
+    } catch (error) {
+      console.log('call -> error', error);
     }
   },
 };
