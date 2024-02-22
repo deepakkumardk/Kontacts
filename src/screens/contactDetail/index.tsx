@@ -1,7 +1,7 @@
 import React, {useLayoutEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import type {Contact} from 'react-native-contacts';
+import Contacts, {type Contact} from 'react-native-contacts';
 import {Avatar, IconButton, Text} from 'react-native-paper';
 
 const imageSize = 120;
@@ -15,7 +15,12 @@ export const ContactDetail = ({navigation, route}: any) => {
       headerTitle: '',
       headerRight: () => (
         <View style={styles.row}>
-          <IconButton icon={'account-edit'} onPress={() => {}} />
+          <IconButton
+            icon={'account-edit'}
+            onPress={() => {
+              Contacts.openExistingContact(contact);
+            }}
+          />
         </View>
       ),
     });
@@ -55,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   center: {
-    alignSelf: 'center',
+    alignItems: 'center',
     padding: 8,
   },
 });

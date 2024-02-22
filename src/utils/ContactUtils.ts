@@ -2,8 +2,8 @@ import {Linking} from 'react-native';
 import Contacts, {type Contact} from 'react-native-contacts';
 
 const sortContacts = (contacts: Contact[]) => {
-  contacts
-    .filter((item: Contact) => !item.displayName)
+  return contacts
+    .filter((item: Contact) => item.displayName && item.phoneNumbers.length)
     .sort((a, b) => {
       const aName = a.displayName;
       const bName = b.displayName;
@@ -15,7 +15,6 @@ const sortContacts = (contacts: Contact[]) => {
       }
       return 0;
     });
-  return contacts;
 };
 
 export const ContactUtils = {

@@ -5,17 +5,20 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import type {Contact} from 'react-native-contacts';
-import {IconButton, Searchbar} from 'react-native-paper';
+import {Searchbar, useTheme} from 'react-native-paper';
 import {FlashList} from '@shopify/flash-list';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {ContactUtils, PermissionUtils} from 'src/utils';
 import ListItem from './components/ListItem';
 import LargeCardItem from './components/LargeCardItem';
 
 export const Dashboard = ({navigation}: any) => {
+  const theme = useTheme();
+
   const [contacts, setContacts] = useState<Contact[]>([]);
   const contactsListRef = useRef<Contact[]>([]);
   const [itemType, setItemType] = useState<'HORIZONTAL' | 'VERTICAL'>(
@@ -54,18 +57,19 @@ export const Dashboard = ({navigation}: any) => {
               setContacts(contactsListRef.current);
             }}
           />
-          <IconButton
-            icon={
-              itemType === 'HORIZONTAL'
-                ? 'format-align-justify'
-                : 'format-columns'
-            }
+          <TouchableOpacity
+            style={styles.typeIcon}
             onPress={() =>
               setItemType((prev) =>
                 prev === 'HORIZONTAL' ? 'VERTICAL' : 'HORIZONTAL',
               )
-            }
-          />
+            }>
+            <Ionicons
+              color={theme.colors.primary}
+              size={24}
+              name={itemType === 'HORIZONTAL' ? 'reorder-four' : 'grid'}
+            />
+          </TouchableOpacity>
         </View>
       ),
     });
@@ -86,7 +90,9 @@ export const Dashboard = ({navigation}: any) => {
       ) : (
         <ListItem
           contact={item}
-          onImagePress={() => navigation.navigate('ContactDetail', item)}
+          onCallPress={() => ContactUtils.call(item)}
+          onPress={() => navigation.navigate('ContactDetail', item)}
+          onIconPress={() => navigation.navigate('ContactDetail', item)}
         />
       );
     },
@@ -113,10 +119,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   row: {
+    justifyContent: 'space-between',
     flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
   },
   searchbar: {
-    width: '90%',
+    width: '96%',
+  },
+  typeIcon: {
+    paddingHorizontal: 6,
   },
 });

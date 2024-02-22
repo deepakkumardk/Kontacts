@@ -2,6 +2,7 @@ import React, {memo} from 'react';
 import {Dimensions, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Avatar, Button, Surface, Text} from 'react-native-paper';
 import type {Contact} from 'react-native-contacts';
+import stringToColor from 'string-to-color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const {width} = Dimensions.get('window');
@@ -31,6 +32,7 @@ const LargeCardItem = ({
           <Avatar.Text
             size={imageSize}
             label={contact.displayName?.[0].toUpperCase()}
+            style={{backgroundColor: stringToColor(contact.displayName)}}
           />
         )}
         <View style={styles.row}>
