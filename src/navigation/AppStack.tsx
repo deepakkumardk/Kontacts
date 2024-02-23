@@ -1,19 +1,17 @@
 import React from 'react';
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {createStackNavigator} from '@react-navigation/stack';
 import {Dashboard} from 'src/screens/dashboard';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from 'react-native-paper';
 
 import {FavouriteScreen} from 'src/screens/favourite';
-import {ContactDetail} from 'src/screens/contactDetail';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {BottomStackParamList, DrawerStackParamList} from 'src/navigation';
 
-const Stack = createStackNavigator();
-const BottomTab = createBottomTabNavigator();
+const BottomTab = createBottomTabNavigator<BottomStackParamList>();
 
-const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator<DrawerStackParamList>();
 
 export const DrawerStack = () => {
   return (
@@ -24,12 +22,7 @@ export const DrawerStack = () => {
         },
         headerShown: false,
       }}>
-      <Drawer.Screen name="App" component={BottomStack} />
-      <Stack.Screen
-        options={{headerShown: true}}
-        name="ContactDetail"
-        component={ContactDetail}
-      />
+      <Drawer.Screen name="BottomStack" component={BottomStack} />
     </Drawer.Navigator>
   );
 };
@@ -65,6 +58,7 @@ export const BottomStack = () => (
       }}
     />
     <BottomTab.Screen
+      // @ts-ignore
       name="History"
       component={Dashboard}
       options={{
@@ -79,10 +73,4 @@ export const BottomStack = () => (
       }}
     />
   </BottomTab.Navigator>
-);
-
-export const AppStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="ContactDetail" component={ContactDetail} />
-  </Stack.Navigator>
 );

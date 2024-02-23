@@ -15,8 +15,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ContactUtils, PermissionUtils} from 'src/utils';
 import ListItem from './components/ListItem';
 import LargeCardItem from './components/LargeCardItem';
+import {BottomStackScreenProps} from 'src/navigation';
 
-export const Dashboard = ({navigation}: any) => {
+export const Dashboard = ({
+  navigation,
+}: BottomStackScreenProps<'Dashboard'>) => {
   const theme = useTheme();
 
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -85,7 +88,9 @@ export const Dashboard = ({navigation}: any) => {
         <LargeCardItem
           contact={item}
           onPress={() => ContactUtils.call(item)}
-          onIconPress={() => navigation.navigate('ContactDetail', item)}
+          onIconPress={() =>
+            navigation.navigate('ContactDetail', {contact: item})
+          }
         />
       ) : (
         <ListItem

@@ -1,13 +1,17 @@
 import React, {useLayoutEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Contacts, {type Contact} from 'react-native-contacts';
+import Contacts from 'react-native-contacts';
 import {Avatar, IconButton, Text} from 'react-native-paper';
+import {AppScreenProps} from 'src/navigation';
 
 const imageSize = 120;
 
-export const ContactDetail = ({navigation, route}: any) => {
-  const contact: Contact = route.params;
+export const ContactDetail = ({
+  navigation,
+  route,
+}: AppScreenProps<'ContactDetail'>) => {
+  const {contact} = route.params;
   console.log('ContactDetail -> contact', contact);
 
   useLayoutEffect(() => {

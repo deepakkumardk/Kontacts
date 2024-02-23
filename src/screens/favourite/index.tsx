@@ -13,8 +13,11 @@ import {FlashList} from '@shopify/flash-list';
 
 import {ContactUtils, PermissionUtils} from 'src/utils';
 import LargeCardItem from 'src/screens/dashboard/components/LargeCardItem';
+import {BottomStackScreenProps} from 'src/navigation';
 
-export const FavouriteScreen = ({navigation}: any) => {
+export const FavouriteScreen = ({
+  navigation,
+}: BottomStackScreenProps<'Favourite'>) => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const contactsListRef = useRef<Contact[]>([]);
 
