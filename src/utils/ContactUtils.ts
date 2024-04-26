@@ -1,9 +1,10 @@
 import {Linking} from 'react-native';
 import Contacts, {type Contact} from 'react-native-contacts';
 
-const sortContacts = (contacts: Contact[]) => {
+const sortContacts = (contacts: Contact[], isStarred?: boolean) => {
   return contacts
     .filter((item: Contact) => item.displayName && item.phoneNumbers.length)
+    .filter((item: Contact) => (isStarred ? item.isStarred : true))
     .sort((a, b) => {
       const aName = a.displayName;
       const bName = b.displayName;
@@ -27,7 +28,7 @@ export const ContactUtils = {
       return [];
     }
   },
-  getSearchedContacts: async (query: string) => {
+  getSearchedContacts: async (query: string, isStarred?: boolean) => {
     try {
       let contacts: Contact[] = [];
       const isNumber = !isNaN(parseFloat(query)) && isFinite(query as any);
@@ -36,7 +37,7 @@ export const ContactUtils = {
       } else {
         contacts = await Contacts.getContactsMatchingString(query);
       }
-      return sortContacts(contacts);
+      return sortContacts(contacts, isStarred);
     } catch (error) {
       console.warn('getSearchedContacts= -> error', error);
       return [];

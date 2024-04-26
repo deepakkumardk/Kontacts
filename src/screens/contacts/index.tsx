@@ -8,7 +8,7 @@ import React, {
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import type {Contact} from 'react-native-contacts';
-import {Searchbar, useTheme} from 'react-native-paper';
+import {Searchbar, Text, useTheme} from 'react-native-paper';
 import {FlashList} from '@shopify/flash-list';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -17,9 +17,7 @@ import ListItem from './components/ListItem';
 import LargeCardItem from './components/LargeCardItem';
 import {BottomStackScreenProps} from 'src/navigation';
 
-export const Dashboard = ({
-  navigation,
-}: BottomStackScreenProps<'Dashboard'>) => {
+export const Contacts = ({navigation}: BottomStackScreenProps<'Contacts'>) => {
   const theme = useTheme();
 
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -96,8 +94,10 @@ export const Dashboard = ({
         <ListItem
           contact={item}
           onCallPress={() => ContactUtils.call(item)}
-          onPress={() => navigation.navigate('ContactDetail', item)}
-          onIconPress={() => navigation.navigate('ContactDetail', item)}
+          onPress={() => navigation.navigate('ContactDetail', {contact: item})}
+          onIconPress={() =>
+            navigation.navigate('ContactDetail', {contact: item})
+          }
         />
       );
     },
@@ -113,6 +113,7 @@ export const Dashboard = ({
         numColumns={itemType === 'HORIZONTAL' ? 2 : 1}
         renderItem={({item}) => renderItem({item})}
         estimatedItemSize={200}
+        ListEmptyComponent={<Text>sdfljk</Text>}
       />
     </SafeAreaView>
   );

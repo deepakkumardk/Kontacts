@@ -3,7 +3,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {MD3LightTheme, PaperProvider} from 'react-native-paper';
 
-import {DrawerStack} from 'src/navigation';
+import {RootNavigator} from 'src/navigation/RootNavigator';
 
 const theme = {
   ...MD3LightTheme,
@@ -16,7 +16,7 @@ function App() {
   return (
     <NavigationContainer>
       <PaperProvider theme={theme}>
-        <DrawerStack />
+        <RootNavigator />
       </PaperProvider>
     </NavigationContainer>
   );

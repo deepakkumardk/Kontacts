@@ -8,11 +8,11 @@ import React, {
 import {StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import type {Contact} from 'react-native-contacts';
-import {Searchbar} from 'react-native-paper';
+import {Searchbar, Text} from 'react-native-paper';
 import {FlashList} from '@shopify/flash-list';
 
 import {ContactUtils, PermissionUtils} from 'src/utils';
-import LargeCardItem from 'src/screens/dashboard/components/LargeCardItem';
+import LargeCardItem from 'src/screens/contacts/components/LargeCardItem';
 import {BottomStackScreenProps} from 'src/navigation';
 
 export const FavouriteScreen = ({
@@ -33,7 +33,7 @@ export const FavouriteScreen = ({
       contactsListRef.current = contacts;
       setContacts(res);
     }
-  }, []);
+  }, [contacts]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -47,7 +47,7 @@ export const FavouriteScreen = ({
               setSearchQuery(text);
               clearTimeout(intervalId.current);
               setTimeout(async () => {
-                const res = await ContactUtils.getSearchedContacts(text);
+                const res = await ContactUtils.getSearchedContacts(text, true);
                 setContacts(res);
               }, 250);
             }}
@@ -70,7 +70,9 @@ export const FavouriteScreen = ({
       <LargeCardItem
         contact={item}
         onPress={() => ContactUtils.call(item)}
-        onIconPress={() => navigation.navigate('ContactDetail', item)}
+        onIconPress={() =>
+          navigation.navigate('ContactDetail', {contact: item})
+        }
       />
     );
   }, []);
@@ -83,6 +85,11 @@ export const FavouriteScreen = ({
         numColumns={2}
         renderItem={({item}) => renderItem({item})}
         estimatedItemSize={200}
+        ListEmptyComponent={
+          <View style={styles.emptyView}>
+            <Text variant="titleLarge">{'No Contacts found'}</Text>
+          </View>
+        }
       />
     </SafeAreaView>
   );
@@ -90,8 +97,8 @@ export const FavouriteScreen = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 12,
     flex: 1,
+    marginHorizontal: 12,
   },
   row: {
     flexDirection: 'row',
@@ -99,5 +106,13 @@ const styles = StyleSheet.create({
   },
   searchbar: {
     width: '105%',
+  },
+  emptyView: {
+    flex: 1,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+    width: '100%',
   },
 });

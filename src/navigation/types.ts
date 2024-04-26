@@ -8,6 +8,8 @@ export type RootStackParamList = {
   App: DrawerNavigationProp<DrawerStackParamList>;
 
   ContactDetail: {contact: Contact};
+
+  Settings: undefined;
 };
 
 export type DrawerStackParamList = {
@@ -16,7 +18,7 @@ export type DrawerStackParamList = {
 
 export type BottomStackParamList = {
   Favourite: undefined;
-  Dashboard: undefined;
+  Contacts: undefined;
   History: undefined;
 };
 
